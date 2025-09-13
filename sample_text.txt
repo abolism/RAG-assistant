@@ -1,0 +1,74 @@
+1. Introduction to Deep Generative Models
+Deep generative models are a family of machine learning methods that attempt to learn the underlying probability distribution of observed data. Unlike discriminative models, which focus on mapping inputs to labels, generative models seek to capture how data is generated so that they can produce new, realistic samples that resemble the training examples.
+
+2. Probabilistic Foundations
+The theoretical foundation of generative modeling lies in probability theory. The objective is to approximate the true data distribution 
+𝑝
+(
+𝑥
+)
+p(x) using a model distribution 
+𝑝
+𝜃
+(
+𝑥
+)
+p
+θ
+	​
+
+(x). This often involves maximizing the likelihood of observed data or minimizing a divergence between the model and true distributions.
+
+3. Latent Variable Models
+A key idea in many generative approaches is the use of latent variables. These unobserved variables capture hidden structure in data and allow the model to represent complex dependencies. By sampling from the latent space, new data points can be generated that remain consistent with learned patterns.
+
+4. Variational Autoencoders (VAEs)
+VAEs are a class of generative models that combine neural networks with probabilistic inference. They introduce an encoder network that maps inputs to a latent distribution and a decoder that reconstructs data from latent samples. Training is performed by maximizing the Evidence Lower Bound (ELBO), which balances reconstruction accuracy and latent space regularization.
+
+5. The ELBO Objective
+The ELBO consists of two terms: a reconstruction term that encourages the decoder to reproduce the input data, and a regularization term, typically a Kullback–Leibler (KL) divergence, that aligns the approximate posterior with a prior distribution. This balance ensures that the latent space is smooth and meaningful.
+
+6. Generative Adversarial Networks (GANs)
+GANs are composed of two neural networks trained in a minimax game: a generator that tries to create realistic data, and a discriminator that attempts to distinguish real from generated samples. The adversarial setup drives the generator to produce increasingly realistic outputs over time.
+
+7. Training Challenges in GANs
+Although GANs can generate high-quality, sharp samples, they suffer from several training difficulties. Common problems include mode collapse, where the generator produces limited diversity, and unstable convergence due to the adversarial nature of training. Careful architecture design and loss modifications are often required to stabilize training.
+
+8. Flow-based Models
+Flow-based generative models, such as NICE, RealNVP, and Glow, use invertible neural networks that transform simple base distributions (e.g., Gaussian) into complex data distributions. Because transformations are invertible, these models allow exact likelihood computation and efficient sampling.
+
+9. Autoregressive Models
+Autoregressive generative models factorize the joint probability of data into a product of conditional distributions. Examples include PixelRNN, PixelCNN, and WaveNet. While they provide exact likelihoods and high-quality outputs, their sequential nature makes them computationally expensive for large-scale sampling.
+
+10. Diffusion Probabilistic Models
+Diffusion models generate data by simulating a gradual denoising process that reverses a diffusion of noise. Starting from pure Gaussian noise, the model learns to reconstruct data step by step. Recent advances in diffusion models, such as DDPMs, have achieved state-of-the-art performance in image synthesis.
+
+11. Energy-based Models (EBMs)
+EBMs define a probability distribution through an energy function, where lower energy values correspond to more likely data configurations. Training often involves contrastive divergence or score matching. While conceptually elegant, EBMs are difficult to train at scale due to normalization challenges.
+
+12. Comparison of Approaches
+Each generative modeling paradigm has strengths and weaknesses. VAEs provide structured latent spaces but sometimes generate blurry samples. GANs yield sharp images but lack likelihood estimation. Flow-based models allow exact inference but require heavy computation. Diffusion models achieve high fidelity but are slow to sample.
+
+13. Latent Space Structure
+One of the most powerful features of latent-variable generative models is the ability to manipulate the latent space. Interpolations between points in latent space correspond to smooth transformations in data space, enabling applications such as morphing, style transfer, and controlled generation.
+
+14. Evaluation Metrics
+Evaluating generative models is challenging, as likelihood does not always correlate with perceptual quality. Common metrics include log-likelihood for density estimation, Inception Score (IS) for image realism, and Fréchet Inception Distance (FID) for measuring similarity between real and generated distributions.
+
+15. Applications in Vision
+In computer vision, generative models are used for data augmentation, super-resolution, inpainting, style transfer, and even medical image synthesis. They allow researchers to generate realistic but synthetic datasets that can support tasks where data collection is expensive or limited.
+
+16. Applications in Natural Language
+Generative models have had major impact in natural language processing, where autoregressive transformers like GPT and BERT-based decoders produce coherent text. They are used in machine translation, dialogue systems, summarization, and creative writing.
+
+17. Applications in Audio and Speech
+WaveNet and related autoregressive models revolutionized speech synthesis, producing natural-sounding audio. Generative adversarial and diffusion-based approaches now enable high-quality music generation, voice conversion, and sound effect synthesis.
+
+18. Ethical Considerations
+The power of generative models raises ethical concerns. They can be used to create deepfakes, generate misleading information, or replicate copyrighted data. Responsible use requires consideration of bias, transparency, and misuse prevention.
+
+19. Research Frontiers
+Current research explores scaling generative models to billions of parameters, improving controllability of outputs, and unifying multiple modalities (e.g., text-to-image models like DALL·E and Stable Diffusion). These advancements highlight the central role of generative models in modern AI.
+
+20. Conclusion
+Deep generative models represent one of the most transformative developments in machine learning. By capturing the structure of complex data distributions, they not only enable creative synthesis but also provide insight into the fundamental nature of representation learning. Their continued development promises to shape the future of artificial intelligence across domains.

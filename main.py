@@ -1,5 +1,6 @@
 from retriever import Retriever
 from generator import Generator
+from ingestor import DocumentIngestor as Ingestor
 
 
 
@@ -59,9 +60,13 @@ if __name__ == "__main__":
     ]
 
     dl_ret = Retriever()
-    dl_ret.add_documents(dl_notes, chunk_size=400, overlap=50)
-    dl_ret.peek()
+    dl_ret.add_documents(dl_notes, chunk_size=100, overlap=15)
+    # dl_ret.peek()
     gen = Generator()
+    ing = Ingestor(dl_ret)
+    ing.ingest_text("A growing direction in generative modeling is multimodality, where models learn joint distributions over different data types, such as text, images, and audio. By aligning modalities in a shared latent space, these models can perform tasks like text-to-image synthesis, audio-driven animation, and cross-modal retrieval. Recent advances, including CLIP-guided diffusion and large-scale multimodal transformers, have shown remarkable capability in generating coherent and semantically aligned outputs across diverse data forms.",chunk_size=100, overlap=15)
+    file_path = "sample_text.txt"
+    ing.ingest_file(file_path, chunk_size=100, overlap=15)
 
     # query = "What does the company specialize in?"
 
