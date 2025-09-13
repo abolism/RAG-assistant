@@ -60,6 +60,7 @@ if __name__ == "__main__":
 
     dl_ret = Retriever()
     dl_ret.add_documents(dl_notes, chunk_size=400, overlap=50)
+    dl_ret.peek()
     gen = Generator()
 
     # query = "What does the company specialize in?"

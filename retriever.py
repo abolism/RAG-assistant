@@ -65,14 +65,19 @@ class Retriever:
             ids=all_ids
         )
 
-    # def retrieve(self, query, top_k=3):
-    #     query_embedding = self.embedding_model.encode([query]).tolist()[0]
-    #     results = self.collection.query(
-    #         query_embeddings=[query_embedding],
-    #         n_results=top_k,
-    #         include=["documents", "distances"]
-    #     )
-    #     return results["documents"][0]
+    def peek(self, n=5):
+        """Preview first n documents stored in the collection"""
+        results = self.collection.peek()
+        docs = results.get("documents", [])
+        ids = results.get("ids", [])
+        
+        print(f"\n📂 Collection contains {len(docs)} docs (showing {min(n, len(docs))}):\n")
+        for i, (doc, doc_id) in enumerate(zip(docs[:n], ids[:n])):
+            print(f"[{i}] {doc_id}: {doc[:120]}{'...' if len(doc) > 120 else ''}")
+
+    # def get_doc_by_id(self, id):
+    #     result = self.collection.g
+
     def retrieve(self, query, k=3):
         query_embedding = self.embedding_model.encode([query]).tolist()[0]
         results = self.collection.query(
