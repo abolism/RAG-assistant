@@ -65,6 +65,7 @@ if __name__ == "__main__":
     dl_ret.add_documents(dl_notes, chunk_size=100, overlap=15)
     # dl_ret.peek()
     gen = Generator()
+    gpt_gen = Generator(model="NousResearch/Llama-2-7b-chat-hf-int4", isopenai=True)
     speaker = SpeechSynthesis()
     # # Test dataset
     # test_data = [
@@ -107,28 +108,33 @@ if __name__ == "__main__":
         "What is the objective function of GANs?"
     ]
 
-    # for q in queries:
-    #     retrieved = dl_ret.retrieve(q, 2)
-    #     retrieved = [t[0] for t in retrieved]
-    #     # retrieved = ["", ""]
-    #     # print(q, retrieved)
-    #     answer = gen.generate(q, retrieved)
-    #     print("\n📌 Query:", q)
-    #     print("📑 Retrieved:", retrieved)
-    #     print("🤖 Answer:", answer)
+    for q in queries:
+        retrieved = dl_ret.retrieve(q, 2)
+        retrieved = [t[0] for t in retrieved]
+        # retrieved = ["", ""]
+        # print(q, retrieved)
+        answer = gen.generate(q, retrieved)
+        answer_gpt = gpt_gen.generate(q, retrieved)
+        print("\n📌 Query:", q)
+        print("📑 Retrieved:", retrieved)
+        print("🤖 Answer:", answer)
+        print(f"Answer by gpt mini: {answer_gpt}")
 
-    q = input("\n Ask a question: ")
-    retrieved = dl_ret.retrieve(q, k=2)
-    h_retrieved = hybrid_retriever.retrieve(q, top_k=3, alpha=0.6)
-    for doc, score in h_retrieved:
-        print(f"Score: {score:.4f} | Doc: {doc[:80]}...")
-    docs = [doc for doc,_ in retrieved]
-    print(docs)
-    exit()
-    answer = gen.generate(q, docs)
 
-    print("\n Answer:", answer)
-    speaker.speak(answer)
+    # q = input("\n Ask a question: ")
+    # retrieved = dl_ret.retrieve(q, k=2)
+    # h_retrieved = hybrid_retriever.retrieve(q, top_k=3, alpha=0.6)
+    # for doc, score in h_retrieved:
+    #     print(f"Score: {score:.4f} | Doc: {doc[:80]}...")
+    # docs = [doc for doc,_ in retrieved]
+    # print(docs)
+    # exit()
+    # answer = gen.generate(q, docs)
+
+    # print("\n Answer:", answer)
+    # speaker.speak(answer)
+
+
 
 
     
