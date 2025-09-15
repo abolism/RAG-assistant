@@ -1,4 +1,4 @@
-from retriever import Retriever
+from retriever import Retriever, HybridRetriever
 from generator import Generator
 from ingestor import DocumentIngestor as Ingestor
 from evaluate import Evaluation
@@ -61,6 +61,7 @@ if __name__ == "__main__":
     ]
 
     dl_ret = Retriever()
+    hybrid_retriever = HybridRetriever(dl_notes)
     dl_ret.add_documents(dl_notes, chunk_size=100, overlap=15)
     # dl_ret.peek()
     gen = Generator()
@@ -118,7 +119,12 @@ if __name__ == "__main__":
 
     q = input("\n Ask a question: ")
     retrieved = dl_ret.retrieve(q, k=2)
+    h_retrieved = hybrid_retriever.retrieve(q, top_k=3, alpha=0.6)
+    for doc, score in h_retrieved:
+        print(f"Score: {score:.4f} | Doc: {doc[:80]}...")
     docs = [doc for doc,_ in retrieved]
+    print(docs)
+    exit()
     answer = gen.generate(q, docs)
 
     print("\n Answer:", answer)

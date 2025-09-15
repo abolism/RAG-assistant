@@ -1,9 +1,11 @@
 # retriever.py
 import os
 os.environ["USE_TF"] = "0"
-from sentence_transformers import SentenceTransformer
 import chromadb
 from chromadb.config import Settings
+from sentence_transformers import SentenceTransformer, CrossEncoder
+from rank_bm25 import BM25Okapi
+import numpy as np
 
 class Retriever:
     def __init__(self):
@@ -88,3 +90,49 @@ class Retriever:
         scores = results["distances"][0]  # similarity scores
         return list(zip(docs, scores))  # [(doc, score), ...]
 
+
+
+class HybridRetriever:
+    def __init__(self, docs, embedding_model="sentence-transformers/all-MiniLM-L6-v2", reranker_model="cross-encoder/ms-marco-MiniLM-L-6-v2"):
+        # Store documents
+        self.docs = docs
+        
+        # BM25 setup
+        tokenized_corpus = [doc.lower().split() for doc in docs]
+        self.bm25 = BM25Okapi(tokenized_corpus)
+        
+        # Embedding model
+        self.embedder = SentenceTransformer(embedding_model)
+        self.doc_embeddings = self.embedder.encode(docs, convert_to_numpy=True)
+        
+        # Reranker model (cross-encoder)
+        self.reranker = CrossEncoder(reranker_model)
+    
+    def retrieve(self, query, top_k=5, alpha=0.5):
+        """
+        Hybrid retriever with BM25 + embeddings + reranking
+        alpha = weight for embeddings (0 → only BM25, 1 → only embeddings)
+        """
+        # --- BM25 retrieval ---
+        bm25_scores = self.bm25.get_scores(query.lower().split())
+        
+        # --- Embedding retrieval ---
+        query_emb = self.embedder.encode(query, convert_to_numpy=True)
+        emb_scores = np.dot(self.doc_embeddings, query_emb) / (
+            np.linalg.norm(self.doc_embeddings, axis=1) * np.linalg.norm(query_emb)
+        )
+        
+        # --- Hybrid score ---
+        final_scores = alpha * emb_scores + (1 - alpha) * (bm25_scores / np.max(bm25_scores))
+        
+        # Get top candidates
+        top_ids = np.argsort(final_scores)[::-1][:top_k]
+        candidates = [(self.docs[i], final_scores[i]) for i in top_ids]
+        
+        # --- Reranking ---
+        rerank_inputs = [[query, doc] for doc, _ in candidates]
+        rerank_scores = self.reranker.predict(rerank_inputs)
+        
+        reranked = sorted(zip([c[0] for c in candidates], rerank_scores), key=lambda x: x[1], reverse=True)
+        
+        return reranked
