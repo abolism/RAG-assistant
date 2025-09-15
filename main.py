@@ -2,6 +2,7 @@ from retriever import Retriever
 from generator import Generator
 from ingestor import DocumentIngestor as Ingestor
 from evaluate import Evaluation
+from speech import SpeechSynthesis
 
 
 if __name__ == "__main__":
@@ -63,6 +64,7 @@ if __name__ == "__main__":
     dl_ret.add_documents(dl_notes, chunk_size=100, overlap=15)
     # dl_ret.peek()
     gen = Generator()
+    speaker = SpeechSynthesis()
     # # Test dataset
     # test_data = [
     #     {
@@ -104,15 +106,23 @@ if __name__ == "__main__":
         "What is the objective function of GANs?"
     ]
 
-    for q in queries:
-        retrieved = dl_ret.retrieve(q, 2)
-        retrieved = [t[0] for t in retrieved]
-        # retrieved = ["", ""]
-        # print(q, retrieved)
-        answer = gen.generate(q, retrieved)
-        print("\n📌 Query:", q)
-        print("📑 Retrieved:", retrieved)
-        print("🤖 Answer:", answer)
+    # for q in queries:
+    #     retrieved = dl_ret.retrieve(q, 2)
+    #     retrieved = [t[0] for t in retrieved]
+    #     # retrieved = ["", ""]
+    #     # print(q, retrieved)
+    #     answer = gen.generate(q, retrieved)
+    #     print("\n📌 Query:", q)
+    #     print("📑 Retrieved:", retrieved)
+    #     print("🤖 Answer:", answer)
+
+    q = input("\n Ask a question: ")
+    retrieved = dl_ret.retrieve(q, k=2)
+    docs = [doc for doc,_ in retrieved]
+    answer = gen.generate(q, docs)
+
+    print("\n Answer:", answer)
+    speaker.speak(answer)
 
 
     
